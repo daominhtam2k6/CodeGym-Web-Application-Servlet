@@ -1,0 +1,39 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg"
+     width="120"
+     height="120"
+     viewBox="0 0 120 120">
+
+    <rect
+        width="120"
+        height="120"
+        rx="18"
+        fill="#dcfce7"
+    />
+
+    <circle
+        cx="60"
+        cy="43"
+        r="23"
+        fill="#16a34a"
+    />
+
+    <path
+        d="M20 110
+           C24 78 42 68 60 68
+           C78 68 96 78 100 110"
+        fill="#15803d"
+    />
+
+    <text
+        x="60"
+        y="51"
+        text-anchor="middle"
+        font-family="Arial"
+        font-size="18"
+        font-weight="bold"
+        fill="white"
+    >
+        T
+    </text>
+
+</svg>
