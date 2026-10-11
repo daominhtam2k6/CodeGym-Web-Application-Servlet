@@ -1,6 +1,6 @@
 # User Management - JSP Servlet JDBC MySQL
 
-Ứng dụng CRUD User theo kiến trúc MVC + DAO.
+Ứng dụng quản lý User theo mô hình MVC + DAO.
 
 ## Công nghệ
 
@@ -11,24 +11,10 @@
 - JSTL 3
 - JDBC
 - MySQL
+- PreparedStatement
+- CallableStatement
+- Stored Procedure
 - Tomcat 10.1+
-
-## Database
-
-Database:
-
-demo
-
-Table:
-
-users
-
-Columns:
-
-- id
-- name
-- email
-- country
 
 ## Chức năng
 
@@ -36,58 +22,76 @@ Columns:
 - Thêm User
 - Sửa User
 - Xóa User
-- Tìm kiếm theo country
+- Tìm theo country
 - Sắp xếp theo name
 
-## Search by Country
+## Stored Procedures
 
-Ví dụ:
+File:
 
-/users?action=search&country=Viet
+stored-procedures.sql
 
-DAO sử dụng:
+Có 2 procedure:
 
-WHERE country LIKE ?
+get_user_by_id
 
-PreparedStatement parameter:
+insert_user
 
-%Viet%
-
-Vì vậy có thể tìm được:
-
-Viet Nam
-
-## Sort by Name
-
-URL:
-
-/users?action=sort
+## get_user_by_id
 
 SQL:
 
-ORDER BY name ASC
+CALL get_user_by_id(?)
 
-## DAO
+Java:
 
-IUserDAO có:
+CallableStatement
 
-insertUser
+Được sử dụng khi mở form Edit.
 
-selectUser
+## insert_user
 
-selectAllUsers
+SQL:
 
-deleteUser
+CALL insert_user(?, ?, ?)
 
-updateUser
+Java:
 
-searchByCountry
+CallableStatement
 
-sortByName
+Được sử dụng khi tạo User mới.
 
-## URL
+## PRG Pattern
 
-http://localhost:8080/user-management/users
+Sau khi insert thành công:
+
+POST
+
+-> Redirect
+
+-> GET
+
+Giúp tránh insert trùng khi người dùng nhấn F5.
+
+## Các chức năng vẫn dùng PreparedStatement
+
+- Danh sách
+- Update
+- Delete
+- Search Country
+- Sort Name
+
+## Chạy Stored Procedures
+
+Mở MySQL Workbench hoặc DBeaver.
+
+Chạy file:
+
+stored-procedures.sql
+
+Hoặc từ Windows CMD:
+
+mysql -u root -p < stored-procedures.sql
 
 ## Build
 
@@ -97,16 +101,6 @@ WAR:
 
 target/user-management.war
 
-## MySQL
+## URL
 
-Kiểm tra cấu hình trong:
-
-src/main/java/com/codegym/dao/UserDAO.java
-
-Các giá trị cần đúng với máy:
-
-jdbcURL
-
-jdbcUsername
-
-jdbcPassword
+http://localhost:8080/user-management/users

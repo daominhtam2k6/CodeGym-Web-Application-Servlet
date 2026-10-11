@@ -15,9 +15,13 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Controller xu ly CRUD,
- * tim kiem theo country
- * va sap xep theo name.
+ * Controller User Management.
+ *
+ * Ho tro:
+ * - CRUD
+ * - Search Country
+ * - Sort Name
+ * - Stored Procedures
  */
 @WebServlet(
         name = "UserServlet",
@@ -210,6 +214,10 @@ public class UserServlet extends HttpServlet {
     }
 
 
+    // =======================================================
+    // LIST
+    // =======================================================
+
     private void listUsers(
             HttpServletRequest request,
             HttpServletResponse response
@@ -240,11 +248,10 @@ public class UserServlet extends HttpServlet {
     }
 
 
-    /**
-     * GET:
-     *
-     * /users?action=search&country=Viet
-     */
+    // =======================================================
+    // SEARCH COUNTRY
+    // =======================================================
+
     private void searchByCountry(
             HttpServletRequest request,
             HttpServletResponse response
@@ -303,11 +310,10 @@ public class UserServlet extends HttpServlet {
     }
 
 
-    /**
-     * GET:
-     *
-     * /users?action=sort
-     */
+    // =======================================================
+    // SORT NAME
+    // =======================================================
+
     private void sortByName(
             HttpServletRequest request,
             HttpServletResponse response
@@ -333,7 +339,7 @@ public class UserServlet extends HttpServlet {
 
         request.setAttribute(
                 "pageTitle",
-                "Danh sách sắp xếp theo Name A-Z"
+                "Danh sách sắp xếp Name A-Z"
         );
 
 
@@ -363,6 +369,10 @@ public class UserServlet extends HttpServlet {
     }
 
 
+    // =======================================================
+    // SHOW CREATE
+    // =======================================================
+
     private void showNewForm(
             HttpServletRequest request,
             HttpServletResponse response
@@ -381,6 +391,22 @@ public class UserServlet extends HttpServlet {
         );
     }
 
+
+    // =======================================================
+    // SHOW EDIT
+    //
+    // DAY LA CHO DUOC CAP NHAT:
+    //
+    // selectUser(id)
+    //
+    // ->
+    //
+    // getUserById(id)
+    //
+    // ->
+    //
+    // CALL get_user_by_id(?)
+    // =======================================================
 
     private void showEditForm(
             HttpServletRequest request,
@@ -413,7 +439,7 @@ public class UserServlet extends HttpServlet {
 
 
         User existingUser =
-                userDAO.selectUser(id);
+                userDAO.getUserById(id);
 
 
         if (existingUser == null) {
@@ -445,6 +471,15 @@ public class UserServlet extends HttpServlet {
         );
     }
 
+
+    // =======================================================
+    // SHOW DELETE
+    //
+    // Bai tap chi yeu cau Stored Procedure
+    // cho get-by-id cua Edit va Insert.
+    //
+    // Chuc nang Delete van duoc giu nguyen.
+    // =======================================================
 
     private void showDeleteForm(
             HttpServletRequest request,
@@ -510,6 +545,22 @@ public class UserServlet extends HttpServlet {
     }
 
 
+    // =======================================================
+    // INSERT
+    //
+    // DAY LA CHO DUOC CAP NHAT:
+    //
+    // insertUser(newUser)
+    //
+    // ->
+    //
+    // insertUserStore(newUser)
+    //
+    // ->
+    //
+    // CALL insert_user(?, ?, ?)
+    // =======================================================
+
     private void insertUser(
             HttpServletRequest request,
             HttpServletResponse response
@@ -542,17 +593,32 @@ public class UserServlet extends HttpServlet {
                 );
 
 
-        userDAO.insertUser(
+        userDAO.insertUserStore(
                 newUser
         );
 
 
+        /*
+         * PRG Pattern:
+         *
+         * POST
+         * ->
+         * Redirect
+         * ->
+         * GET
+         *
+         * Tranh insert lai khi F5.
+         */
         response.sendRedirect(
                 request.getContextPath()
                 + "/users"
         );
     }
 
+
+    // =======================================================
+    // UPDATE
+    // =======================================================
 
     private void updateUser(
             HttpServletRequest request,
@@ -606,6 +672,10 @@ public class UserServlet extends HttpServlet {
         );
     }
 
+
+    // =======================================================
+    // DELETE
+    // =======================================================
 
     private void deleteUser(
             HttpServletRequest request,

@@ -2,6 +2,7 @@ package com.codegym.dao;
 
 import com.codegym.model.User;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -12,12 +13,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Trien khai CRUD, Search va Sort
- * bang JDBC + MySQL.
+ * DAO truy cap MySQL bang JDBC.
  *
- * LUU Y:
- * Kiem tra jdbcUsername va jdbcPassword
- * cho dung voi MySQL tren may.
+ * PreparedStatement:
+ * - CRUD cu
+ * - Search Country
+ * - Sort Name
+ *
+ * CallableStatement:
+ * - get_user_by_id
+ * - insert_user
  */
 public class UserDAO implements IUserDAO {
 
@@ -64,12 +69,6 @@ public class UserDAO implements IUserDAO {
             + "WHERE id = ?";
 
 
-    /*
-     * Tim country bang LIKE.
-     *
-     * Vi dung PreparedStatement nen
-     * tranh noi truc tiep input vao SQL.
-     */
     private static final String SEARCH_BY_COUNTRY_SQL =
             "SELECT id, name, email, country "
             + "FROM users "
@@ -77,13 +76,32 @@ public class UserDAO implements IUserDAO {
             + "ORDER BY id";
 
 
-    /*
-     * Sap xep name tang dan A-Z.
-     */
     private static final String SORT_BY_NAME_SQL =
             "SELECT id, name, email, country "
             + "FROM users "
             + "ORDER BY name ASC";
+
+
+    /*
+     * Stored Procedure:
+     *
+     * get_user_by_id(IN user_id INT)
+     */
+    private static final String CALL_GET_USER_BY_ID =
+            "{CALL get_user_by_id(?)}";
+
+
+    /*
+     * Stored Procedure:
+     *
+     * insert_user(
+     *     IN user_name,
+     *     IN user_email,
+     *     IN user_country
+     * )
+     */
+    private static final String CALL_INSERT_USER =
+            "{CALL insert_user(?, ?, ?)}";
 
 
     public UserDAO() {
@@ -115,6 +133,10 @@ public class UserDAO implements IUserDAO {
         );
     }
 
+
+    // =======================================================
+    // CRUD CU - PREPAREDSTATEMENT
+    // =======================================================
 
     @Override
     public void insertUser(User user)
@@ -294,6 +316,10 @@ public class UserDAO implements IUserDAO {
     }
 
 
+    // =======================================================
+    // SEARCH COUNTRY
+    // =======================================================
+
     @Override
     public List<User> searchByCountry(
             String country
@@ -313,17 +339,6 @@ public class UserDAO implements IUserDAO {
                         )
         ) {
 
-            /*
-             * Vi du:
-             *
-             * country = Viet
-             *
-             * SQL nhan:
-             *
-             * %Viet%
-             *
-             * => tim duoc Viet Nam.
-             */
             statement.setString(
                     1,
                     "%"
@@ -352,6 +367,10 @@ public class UserDAO implements IUserDAO {
         return users;
     }
 
+
+    // =======================================================
+    // SORT NAME
+    // =======================================================
 
     @Override
     public List<User> sortByName()
@@ -389,9 +408,135 @@ public class UserDAO implements IUserDAO {
     }
 
 
-    /**
-     * Chuyen mot dong ResultSet thanh User.
-     */
+    // =======================================================
+    // STORED PROCEDURE:
+    // get_user_by_id
+    // =======================================================
+
+    @Override
+    public User getUserById(int id) {
+
+        User user = null;
+
+
+        try (
+                Connection connection =
+                        getConnection();
+
+                CallableStatement callableStatement =
+                        connection.prepareCall(
+                                CALL_GET_USER_BY_ID
+                        )
+        ) {
+
+            /*
+             * Tham so thu 1 tuong ung:
+             *
+             * IN user_id INT
+             */
+            callableStatement.setInt(
+                    1,
+                    id
+            );
+
+
+            try (
+                    ResultSet resultSet =
+                            callableStatement.executeQuery()
+            ) {
+
+                if (resultSet.next()) {
+
+                    String name =
+                            resultSet.getString(
+                                    "name"
+                            );
+
+                    String email =
+                            resultSet.getString(
+                                    "email"
+                            );
+
+                    String country =
+                            resultSet.getString(
+                                    "country"
+                            );
+
+
+                    user =
+                            new User(
+                                    id,
+                                    name,
+                                    email,
+                                    country
+                            );
+                }
+            }
+
+        } catch (SQLException exception) {
+
+            exception.printStackTrace();
+        }
+
+
+        return user;
+    }
+
+
+    // =======================================================
+    // STORED PROCEDURE:
+    // insert_user
+    // =======================================================
+
+    @Override
+    public void insertUserStore(User user)
+            throws SQLException {
+
+        try (
+                Connection connection =
+                        getConnection();
+
+                CallableStatement callableStatement =
+                        connection.prepareCall(
+                                CALL_INSERT_USER
+                        )
+        ) {
+
+            /*
+             * Thu tu parameter phai trung voi:
+             *
+             * insert_user(
+             *     user_name,
+             *     user_email,
+             *     user_country
+             * )
+             */
+
+            callableStatement.setString(
+                    1,
+                    user.getName()
+            );
+
+            callableStatement.setString(
+                    2,
+                    user.getEmail()
+            );
+
+            callableStatement.setString(
+                    3,
+                    user.getCountry()
+            );
+
+
+            callableStatement.executeUpdate();
+        }
+    }
+
+
+    // =======================================================
+    // RESULTSET -> USER
+    // =======================================================
+
     private User mapUser(
             ResultSet resultSet
     ) throws SQLException {

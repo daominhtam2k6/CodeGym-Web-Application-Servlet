@@ -6,8 +6,13 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Khai bao cac thao tac CRUD,
- * tim kiem va sap xep User.
+ * DAO Interface cho User.
+ *
+ * Bao gom:
+ * - CRUD
+ * - Search Country
+ * - Sort Name
+ * - Stored Procedures
  */
 public interface IUserDAO {
 
@@ -26,22 +31,27 @@ public interface IUserDAO {
     boolean updateUser(User user)
             throws SQLException;
 
-    /**
-     * Tim kiem User theo country.
-     *
-     * @param country tu khoa country
-     * @return danh sach User phu hop
-     */
     List<User> searchByCountry(
             String country
     ) throws SQLException;
 
-    /**
-     * Lay danh sach User duoc sap xep
-     * theo name tang dan A-Z.
-     *
-     * @return danh sach da sap xep
-     */
     List<User> sortByName()
+            throws SQLException;
+
+
+    /**
+     * Goi Stored Procedure:
+     *
+     * get_user_by_id
+     */
+    User getUserById(int id);
+
+
+    /**
+     * Goi Stored Procedure:
+     *
+     * insert_user
+     */
+    void insertUserStore(User user)
             throws SQLException;
 }
