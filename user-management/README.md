@@ -1,6 +1,6 @@
 # User Management - JDBC Transaction
 
-á»¨ng dá»¥ng User Management sá»­ dá»¥ng:
+Ã¡Â»Â¨ng dÃ¡Â»Â¥ng User Management sÃ¡Â»Â­ dÃ¡Â»Â¥ng:
 
 - Java 17
 - JSP
@@ -14,7 +14,7 @@
 - CallableStatement
 - JDBC Transaction
 
-## Chá»©c nÄƒng
+## ChÃ¡Â»Â©c nÃ„Æ’ng
 
 - List User
 - Create User
@@ -27,17 +27,17 @@
 
 ## Transaction Database
 
-Cháº¡y:
+ChÃ¡ÂºÂ¡y:
 
 transaction-setup.sql
 
-File nÃ y táº¡o:
+File nÃƒÂ y tÃ¡ÂºÂ¡o:
 
 permission
 
 user_permission
 
-Permission máº«u:
+Permission mÃ¡ÂºÂ«u:
 
 1 = add
 
@@ -53,7 +53,7 @@ Method:
 
 addUserTransaction(User user, int[] permissionIds)
 
-CÃ¡c bÆ°á»›c:
+CÃƒÂ¡c bÃ†Â°Ã¡Â»â€ºc:
 
 1. connection.setAutoCommit(false)
 
@@ -67,21 +67,21 @@ CÃ¡c bÆ°á»›c:
 
 6. connection.commit()
 
-Náº¿u lá»—i:
+NÃ¡ÂºÂ¿u lÃ¡Â»â€”i:
 
 connection.rollback()
 
 ## Create User
 
-create.jsp cÃ³ checkbox:
+create.jsp cÃƒÂ³ checkbox:
 
 permissions
 
-Servlet Ä‘á»c báº±ng:
+Servlet Ã„â€˜Ã¡Â»Âc bÃ¡ÂºÂ±ng:
 
 request.getParameterValues("permissions")
 
-Sau Ä‘Ã³ chuyá»ƒn thÃ nh int[].
+Sau Ã„â€˜ÃƒÂ³ chuyÃ¡Â»Æ’n thÃƒÂ nh int[].
 
 ## URL
 
@@ -100,7 +100,7 @@ WAR:
 target/user-management.war
 # Without Transaction Demo
 
-Bài thực hành mô phỏng nhiều câu SQL phụ thuộc nhau nhưng không sử dụng Transaction.
+BÃ i thá»±c hÃ nh mÃ´ phá»ng nhiá»u cÃ¢u SQL phá»¥ thuá»™c nhau nhÆ°ng khÃ´ng sá»­ dá»¥ng Transaction.
 
 ## Method
 
@@ -112,7 +112,7 @@ UserDAO:
 
 insertUpdateWithoutTransaction()
 
-## Luồng
+## Luá»“ng
 
 1. DROP Employee
 
@@ -122,39 +122,108 @@ insertUpdateWithoutTransaction()
 
 4. INSERT Ngan
 
-5. Cố tình thực thi UPDATE lỗi
+5. Cá»‘ tÃ¬nh thá»±c thi UPDATE lá»—i
 
-Vì không gọi:
+VÃ¬ khÃ´ng gá»i:
 
 connection.setAutoCommit(false)
 
-nên JDBC sử dụng autoCommit mặc định.
+nÃªn JDBC sá»­ dá»¥ng autoCommit máº·c Ä‘á»‹nh.
 
-Hai INSERT được commit trước khi UPDATE bị lỗi.
+Hai INSERT Ä‘Æ°á»£c commit trÆ°á»›c khi UPDATE bá»‹ lá»—i.
 
 ## URL test
 
 http://localhost:8080/user-management/users?action=test-without-tran
 
-## Kiểm tra MySQL
+## Kiá»ƒm tra MySQL
 
 SELECT *
 FROM Employee;
 
-Kết quả mong đợi:
+Káº¿t quáº£ mong Ä‘á»£i:
 
 Quynh - 10
 
 Ngan - 20
 
-Quynh KHÔNG được update thành 999.99.
+Quynh KHÃ”NG Ä‘Æ°á»£c update thÃ nh 999.99.
 
-## Ý nghĩa
+## Ã nghÄ©a
 
-Không có Transaction:
+KhÃ´ng cÃ³ Transaction:
 
-INSERT thành công được commit ngay.
+INSERT thÃ nh cÃ´ng Ä‘Æ°á»£c commit ngay.
 
-SQL tiếp theo thất bại không thể tự động hoàn tác các lệnh trước.
+SQL tiáº¿p theo tháº¥t báº¡i khÃ´ng thá»ƒ tá»± Ä‘á»™ng hoÃ n tÃ¡c cÃ¡c lá»‡nh trÆ°á»›c.
 
-Đây là tình huống dữ liệu được cập nhật một phần.
+ÄÃ¢y lÃ  tÃ¬nh huá»‘ng dá»¯ liá»‡u Ä‘Æ°á»£c cáº­p nháº­t má»™t pháº§n.
+# JDBC Transaction Employee Test
+
+## Không Transaction
+
+URL:
+
+http://localhost:8080/user-management/users?action=test-without-tran
+
+Kết quả khi UPDATE lỗi:
+
+Quynh = 10
+
+Ngan = 20
+
+Hai INSERT vẫn tồn tại.
+
+## Có Transaction
+
+URL:
+
+http://localhost:8080/user-management/users?action=test-use-tran
+
+Luồng:
+
+connection.setAutoCommit(false)
+
+INSERT Quynh
+
+INSERT Ngan
+
+UPDATE Quynh
+
+Nếu tất cả thành công:
+
+connection.commit()
+
+Nếu có lỗi:
+
+connection.rollback()
+
+## Lần 1 - cố tình gây lỗi
+
+Code:
+
+psUpdate.setBigDecimal(2, new BigDecimal("999.99"));
+
+Parameter 1 bị thiếu.
+
+Kết quả:
+
+SELECT * FROM Employee;
+
+Bảng rỗng.
+
+## Lần 2 - sửa lỗi
+
+Đổi thành:
+
+psUpdate.setBigDecimal(1, new BigDecimal("999.99"));
+
+Sau đó build và deploy lại.
+
+Kết quả:
+
+Quynh = 999.99
+
+Ngan = 20
+
+Hai INSERT và một UPDATE được commit cùng nhau.

@@ -128,6 +128,16 @@ public class UserServlet extends HttpServlet {
 
                     break;
 
+                
+                case "test-use-tran":
+
+                    testUseTran(
+                            request,
+                            response
+                    );
+
+                    break;
+
                 default:
 
                     listUsers(
@@ -269,21 +279,88 @@ public class UserServlet extends HttpServlet {
                 + "padding:30px;"
                 + "border-radius:12px;'>"
                 + "<h1 style='color:#1b2a7a;'>"
-                + "Đã chạy test không sử dụng Transaction"
+                + "ÄÃ£ cháº¡y test khÃ´ng sá»­ dá»¥ng Transaction"
                 + "</h1>"
-                + "<p>Hai INSERT được thực thi trước khi UPDATE bị lỗi.</p>"
-                + "<p>Hãy kiểm tra Console Tomcat và chạy:</p>"
+                + "<p>Hai INSERT Ä‘Æ°á»£c thá»±c thi trÆ°á»›c khi UPDATE bá»‹ lá»—i.</p>"
+                + "<p>HÃ£y kiá»ƒm tra Console Tomcat vÃ  cháº¡y:</p>"
                 + "<pre>SELECT * FROM Employee;</pre>"
-                + "<p>Kết quả mong đợi:</p>"
+                + "<p>Káº¿t quáº£ mong Ä‘á»£i:</p>"
                 + "<ul>"
                 + "<li>Quynh - salary 10</li>"
                 + "<li>Ngan - salary 20</li>"
                 + "</ul>"
-                + "<p>Quynh không được cập nhật lên 999.99.</p>"
+                + "<p>Quynh khÃ´ng Ä‘Æ°á»£c cáº­p nháº­t lÃªn 999.99.</p>"
+                + "<a href='"
+                + request.getContextPath()
+                + "/users'>Quay láº¡i User Management</a>"
+                + "</div>"
+                + "</body>"
+                + "</html>"
+        );
+    }
+
+    
+    // =======================================================
+    // TEST JDBC TRANSACTION
+    // =======================================================
+
+    private void testUseTran(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) throws SQLException,
+            IOException {
+
+        userDAO.insertUpdateUseTransaction();
+
+
+        System.out.println(
+                "Hoan tat goi testUseTran."
+        );
+
+
+        response.setContentType(
+                "text/html;charset=UTF-8"
+        );
+
+
+        response.getWriter().println(
+                "<!DOCTYPE html>"
+                + "<html lang='vi'>"
+                + "<head>"
+                + "<meta charset='UTF-8'>"
+                + "<title>JDBC Transaction Test</title>"
+                + "</head>"
+                + "<body style='"
+                + "font-family:Arial;"
+                + "padding:40px;"
+                + "background:#f8fafc;"
+                + "'>"
+                + "<main style='"
+                + "max-width:750px;"
+                + "margin:auto;"
+                + "background:white;"
+                + "padding:35px;"
+                + "border-radius:12px;"
+                + "box-shadow:0 8px 30px rgba(15,23,42,.1);"
+                + "'>"
+                + "<h1 style='color:#1b2a7a;'>"
+                + "JDBC Transaction Test"
+                + "</h1>"
+                + "<p>Đã thực thi kịch bản INSERT + INSERT + UPDATE.</p>"
+                + "<p>Hãy kiểm tra Console Tomcat và MySQL.</p>"
+                + "<pre>"
+                + "USE demo;\n"
+                + "SELECT * FROM Employee;"
+                + "</pre>"
+                + "<p><strong>Lần 1:</strong> "
+                + "UPDATE đang cố tình lỗi nên bảng Employee phải rỗng.</p>"
+                + "<p><strong>Lần 2:</strong> "
+                + "sửa parameter index thành 1, "
+                + "bảng sẽ có Quynh=999.99 và Ngan=20.</p>"
                 + "<a href='"
                 + request.getContextPath()
                 + "/users'>Quay lại User Management</a>"
-                + "</div>"
+                + "</main>"
                 + "</body>"
                 + "</html>"
         );
@@ -308,7 +385,7 @@ public class UserServlet extends HttpServlet {
 
         request.setAttribute(
                 "pageTitle",
-                "Danh sÃ¡ch táº¥t cáº£ User"
+                "Danh sÃƒÂ¡ch tÃ¡ÂºÂ¥t cÃ¡ÂºÂ£ User"
         );
 
 
@@ -370,7 +447,7 @@ public class UserServlet extends HttpServlet {
 
         request.setAttribute(
                 "pageTitle",
-                "Káº¿t quáº£ tÃ¬m kiáº¿m theo country"
+                "KÃ¡ÂºÂ¿t quÃ¡ÂºÂ£ tÃƒÂ¬m kiÃ¡ÂºÂ¿m theo country"
         );
 
 
@@ -410,7 +487,7 @@ public class UserServlet extends HttpServlet {
 
         request.setAttribute(
                 "pageTitle",
-                "Danh sÃ¡ch sáº¯p xáº¿p Name A-Z"
+                "Danh sÃƒÂ¡ch sÃ¡ÂºÂ¯p xÃ¡ÂºÂ¿p Name A-Z"
         );
 
 

@@ -71,4 +71,14 @@ public interface IUserDAO {
      */
     void insertUpdateWithoutTransaction()
             throws SQLException;
+
+    /**
+     * Demo nhieu cau SQL co su dung JDBC Transaction.
+     *
+     * Tat autoCommit.
+     * Commit neu thanh cong.
+     * Rollback neu co loi.
+     */
+    void insertUpdateUseTransaction()
+            throws SQLException;
 }

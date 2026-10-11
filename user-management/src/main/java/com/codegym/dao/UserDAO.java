@@ -152,6 +152,37 @@ public class UserDAO implements IUserDAO {
     private static final String SQL_EMPLOYEE_TABLE_DROP =
             "DROP TABLE IF EXISTS Employee";
 
+    
+    // =======================================================
+    // SQL CHO BAI JDBC TRANSACTION
+    // =======================================================
+
+    private static final String SQL_INSERT_EMPLOYEE_USE_TRANSACTION =
+            "INSERT INTO Employee "
+            + "(name, salary, created_Date) "
+            + "VALUES (?, ?, ?)";
+
+
+    private static final String SQL_UPDATE_EMPLOYEE_USE_TRANSACTION =
+            "UPDATE Employee "
+            + "SET salary = ? "
+            + "WHERE name = ?";
+
+
+    private static final String SQL_EMPLOYEE_CREATE_USE_TRANSACTION =
+            "CREATE TABLE Employee "
+            + "("
+            + " id INT AUTO_INCREMENT,"
+            + " name VARCHAR(100) NOT NULL,"
+            + " salary DECIMAL(15, 2) NOT NULL,"
+            + " created_Date TIMESTAMP,"
+            + " PRIMARY KEY (id)"
+            + ")";
+
+
+    private static final String SQL_EMPLOYEE_DROP_USE_TRANSACTION =
+            "DROP TABLE IF EXISTS Employee";
+
     public UserDAO() {
     }
 
@@ -1007,6 +1038,288 @@ public class UserDAO implements IUserDAO {
 
 
             exception.printStackTrace();
+        }
+    }
+
+    
+    // =======================================================
+    // DEMO CO SU DUNG JDBC TRANSACTION
+    //
+    // LAN 1:
+    //
+    // Co tinh de parameter 1 cua UPDATE bi thieu.
+    //
+    // Ket qua:
+    //
+    // INSERT Quynh
+    // INSERT Ngan
+    // UPDATE loi
+    // ->
+    // ROLLBACK
+    // ->
+    // Employee rong
+    //
+    // LAN 2:
+    //
+    // Sua:
+    //
+    // psUpdate.setBigDecimal(2, ...)
+    //
+    // thanh:
+    //
+    // psUpdate.setBigDecimal(1, ...)
+    //
+    // ->
+    // COMMIT
+    // =======================================================
+
+    @Override
+    public void insertUpdateUseTransaction()
+            throws SQLException {
+
+        Connection connection = null;
+
+
+        try {
+
+            connection =
+                    getConnection();
+
+
+            // ===============================================
+            // RESET TABLE TRUOC KHI BAT DAU TRANSACTION
+            // ===============================================
+
+            try (
+                    Statement statement =
+                            connection.createStatement()
+            ) {
+
+                statement.execute(
+                        SQL_EMPLOYEE_DROP_USE_TRANSACTION
+                );
+
+
+                statement.execute(
+                        SQL_EMPLOYEE_CREATE_USE_TRANSACTION
+                );
+            }
+
+
+            // ===============================================
+            // BAT DAU TRANSACTION
+            //
+            // Day la "cong tac" quan trong nhat.
+            // ===============================================
+
+            connection.setAutoCommit(
+                    false
+            );
+
+
+            try (
+                    PreparedStatement psInsert =
+                            connection.prepareStatement(
+                                    SQL_INSERT_EMPLOYEE_USE_TRANSACTION
+                            );
+
+                    PreparedStatement psUpdate =
+                            connection.prepareStatement(
+                                    SQL_UPDATE_EMPLOYEE_USE_TRANSACTION
+                            )
+            ) {
+
+                // ===========================================
+                // INSERT 1: QUYNH
+                // ===========================================
+
+                psInsert.setString(
+                        1,
+                        "Quynh"
+                );
+
+
+                psInsert.setBigDecimal(
+                        2,
+                        new BigDecimal("10")
+                );
+
+
+                psInsert.setTimestamp(
+                        3,
+                        Timestamp.valueOf(
+                                LocalDateTime.now()
+                        )
+                );
+
+
+                psInsert.executeUpdate();
+
+
+                System.out.println(
+                        "Transaction: inserted Quynh."
+                );
+
+
+                // ===========================================
+                // INSERT 2: NGAN
+                // ===========================================
+
+                psInsert.setString(
+                        1,
+                        "Ngan"
+                );
+
+
+                psInsert.setBigDecimal(
+                        2,
+                        new BigDecimal("20")
+                );
+
+
+                psInsert.setTimestamp(
+                        3,
+                        Timestamp.valueOf(
+                                LocalDateTime.now()
+                        )
+                );
+
+
+                psInsert.executeUpdate();
+
+
+                System.out.println(
+                        "Transaction: inserted Ngan."
+                );
+
+
+                // ===========================================
+                // UPDATE CO TINH SAI
+                //
+                // SQL:
+                //
+                // salary = ?       -> parameter 1
+                // name   = ?       -> parameter 2
+                //
+                // DONG DUOI CO TINH DUNG INDEX 2.
+                //
+                // Vi vay parameter 1 KHONG CO GIA TRI.
+                // ===========================================
+
+                psUpdate.setBigDecimal(
+                        2,
+                        new BigDecimal("999.99")
+                );
+
+
+                /*
+                 * LAN 2:
+                 *
+                 * Sau khi test rollback xong,
+                 * sua dong tren thanh:
+                 *
+                 * psUpdate.setBigDecimal(
+                 *         1,
+                 *         new BigDecimal("999.99")
+                 * );
+                 */
+
+
+                psUpdate.setString(
+                        2,
+                        "Quynh"
+                );
+
+
+                /*
+                 * LAN 1:
+                 *
+                 * Dong nay phat sinh SQLException.
+                 */
+                psUpdate.executeUpdate();
+
+
+                // ===========================================
+                // CHI CHAY KHI TOAN BO SQL THANH CONG
+                // ===========================================
+
+                connection.commit();
+
+
+                System.out.println(
+                        "Transaction COMMIT thanh cong."
+                );
+            }
+
+        } catch (Exception exception) {
+
+
+            // ===============================================
+            // BAT KY LENH NAO LOI
+            //
+            // ->
+            //
+            // ROLLBACK TOAN BO INSERT / UPDATE
+            // ===============================================
+
+            if (connection != null) {
+
+                try {
+
+                    connection.rollback();
+
+
+                    System.out.println(
+                            "Co loi. Transaction da ROLLBACK."
+                    );
+
+                } catch (SQLException rollbackException) {
+
+                    exception.addSuppressed(
+                            rollbackException
+                    );
+                }
+            }
+
+
+            System.out.println(
+                    "Loi trong JDBC Transaction:"
+            );
+
+
+            System.out.println(
+                    exception.getMessage()
+            );
+
+
+            exception.printStackTrace();
+
+        } finally {
+
+
+            if (connection != null) {
+
+                try {
+
+                    connection.setAutoCommit(
+                            true
+                    );
+
+                } catch (SQLException autoCommitException) {
+
+                    autoCommitException.printStackTrace();
+                }
+
+
+                try {
+
+                    connection.close();
+
+                } catch (SQLException closeException) {
+
+                    closeException.printStackTrace();
+                }
+            }
         }
     }
 
