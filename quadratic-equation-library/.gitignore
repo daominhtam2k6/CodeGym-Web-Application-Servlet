@@ -1,0 +1,7 @@
+quadratic-equation-lib/target/
+quadratic-equation-demo/target/
+.idea/
+*.iml
+*.class
+*.log
+.DS_Store
