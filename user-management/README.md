@@ -1,97 +1,95 @@
-# User Management - JSP Servlet JDBC MySQL
+# User Management - JDBC Transaction
 
-Ứng dụng quản lý User theo mô hình MVC + DAO.
-
-## Công nghệ
+Ứng dụng User Management sử dụng:
 
 - Java 17
-- Maven
 - JSP
-- Jakarta Servlet 6
-- JSTL 3
+- Servlet
+- JSTL
 - JDBC
 - MySQL
-- PreparedStatement
-- CallableStatement
+- DAO
+- MVC
 - Stored Procedure
-- Tomcat 10.1+
+- CallableStatement
+- JDBC Transaction
 
 ## Chức năng
 
-- Hiển thị danh sách User
-- Thêm User
-- Sửa User
-- Xóa User
-- Tìm theo country
-- Sắp xếp theo name
+- List User
+- Create User
+- Edit User
+- Delete User
+- Search theo Country
+- Sort theo Name
+- Stored Procedure
+- Transaction User + Permission
 
-## Stored Procedures
+## Transaction Database
 
-File:
+Chạy:
 
-stored-procedures.sql
+transaction-setup.sql
 
-Có 2 procedure:
+File này tạo:
 
-get_user_by_id
+permission
 
-insert_user
+user_permission
 
-## get_user_by_id
+Permission mẫu:
 
-SQL:
+1 = add
 
-CALL get_user_by_id(?)
+2 = edit
 
-Java:
+3 = delete
 
-CallableStatement
+4 = view
 
-Được sử dụng khi mở form Edit.
+## Transaction
 
-## insert_user
+Method:
 
-SQL:
+addUserTransaction(User user, int[] permissionIds)
 
-CALL insert_user(?, ?, ?)
+Các bước:
 
-Java:
+1. connection.setAutoCommit(false)
 
-CallableStatement
+2. INSERT INTO users
 
-Được sử dụng khi tạo User mới.
+3. Statement.RETURN_GENERATED_KEYS
 
-## PRG Pattern
+4. getGeneratedKeys()
 
-Sau khi insert thành công:
+5. INSERT INTO user_permission
 
-POST
+6. connection.commit()
 
--> Redirect
+Nếu lỗi:
 
--> GET
+connection.rollback()
 
-Giúp tránh insert trùng khi người dùng nhấn F5.
+## Create User
 
-## Các chức năng vẫn dùng PreparedStatement
+create.jsp có checkbox:
 
-- Danh sách
-- Update
-- Delete
-- Search Country
-- Sort Name
+permissions
 
-## Chạy Stored Procedures
+Servlet đọc bằng:
 
-Mở MySQL Workbench hoặc DBeaver.
+request.getParameterValues("permissions")
 
-Chạy file:
+Sau đó chuyển thành int[].
 
-stored-procedures.sql
+## URL
 
-Hoặc từ Windows CMD:
+http://localhost:8080/user-management/users
 
-mysql -u root -p < stored-procedures.sql
+Create:
+
+http://localhost:8080/user-management/users?action=create
 
 ## Build
 
@@ -100,7 +98,3 @@ mvn clean package
 WAR:
 
 target/user-management.war
-
-## URL
-
-http://localhost:8080/user-management/users

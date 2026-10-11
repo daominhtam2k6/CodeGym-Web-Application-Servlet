@@ -8,21 +8,20 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * DAO truy cap MySQL bang JDBC.
+ * DAO User.
  *
- * PreparedStatement:
- * - CRUD cu
- * - Search Country
- * - Sort Name
- *
- * CallableStatement:
- * - get_user_by_id
- * - insert_user
+ * Demo:
+ * - PreparedStatement
+ * - CallableStatement
+ * - JDBC Transaction
+ * - commit()
+ * - rollback()
  */
 public class UserDAO implements IUserDAO {
 
@@ -39,6 +38,10 @@ public class UserDAO implements IUserDAO {
     private final String jdbcPassword =
             "password";
 
+
+    // =======================================================
+    // SQL CRUD
+    // =======================================================
 
     private static final String INSERT_USERS_SQL =
             "INSERT INTO users "
@@ -69,6 +72,10 @@ public class UserDAO implements IUserDAO {
             + "WHERE id = ?";
 
 
+    // =======================================================
+    // SEARCH / SORT
+    // =======================================================
+
     private static final String SEARCH_BY_COUNTRY_SQL =
             "SELECT id, name, email, country "
             + "FROM users "
@@ -82,26 +89,32 @@ public class UserDAO implements IUserDAO {
             + "ORDER BY name ASC";
 
 
-    /*
-     * Stored Procedure:
-     *
-     * get_user_by_id(IN user_id INT)
-     */
+    // =======================================================
+    // STORED PROCEDURE
+    // =======================================================
+
     private static final String CALL_GET_USER_BY_ID =
             "{CALL get_user_by_id(?)}";
 
 
-    /*
-     * Stored Procedure:
-     *
-     * insert_user(
-     *     IN user_name,
-     *     IN user_email,
-     *     IN user_country
-     * )
-     */
     private static final String CALL_INSERT_USER =
             "{CALL insert_user(?, ?, ?)}";
+
+
+    // =======================================================
+    // TRANSACTION SQL
+    // =======================================================
+
+    private static final String INSERT_USER_TRANSACTION_SQL =
+            "INSERT INTO users "
+            + "(name, email, country) "
+            + "VALUES (?, ?, ?)";
+
+
+    private static final String INSERT_USER_PERMISSION_SQL =
+            "INSERT INTO user_permission "
+            + "(user_id, permission_id) "
+            + "VALUES (?, ?)";
 
 
     public UserDAO() {
@@ -135,7 +148,7 @@ public class UserDAO implements IUserDAO {
 
 
     // =======================================================
-    // CRUD CU - PREPAREDSTATEMENT
+    // INSERT CU
     // =======================================================
 
     @Override
@@ -171,6 +184,10 @@ public class UserDAO implements IUserDAO {
         }
     }
 
+
+    // =======================================================
+    // SELECT USER CU
+    // =======================================================
 
     @Override
     public User selectUser(int id)
@@ -215,6 +232,10 @@ public class UserDAO implements IUserDAO {
     }
 
 
+    // =======================================================
+    // SELECT ALL
+    // =======================================================
+
     @Override
     public List<User> selectAllUsers()
             throws SQLException {
@@ -251,6 +272,10 @@ public class UserDAO implements IUserDAO {
     }
 
 
+    // =======================================================
+    // DELETE
+    // =======================================================
+
     @Override
     public boolean deleteUser(int id)
             throws SQLException {
@@ -275,6 +300,10 @@ public class UserDAO implements IUserDAO {
         }
     }
 
+
+    // =======================================================
+    // UPDATE
+    // =======================================================
 
     @Override
     public boolean updateUser(User user)
@@ -429,11 +458,6 @@ public class UserDAO implements IUserDAO {
                         )
         ) {
 
-            /*
-             * Tham so thu 1 tuong ung:
-             *
-             * IN user_id INT
-             */
             callableStatement.setInt(
                     1,
                     id
@@ -486,6 +510,11 @@ public class UserDAO implements IUserDAO {
     // =======================================================
     // STORED PROCEDURE:
     // insert_user
+    //
+    // Van giu lai de bao toan bai truoc.
+    //
+    // Luong CREATE hien tai se dung
+    // addUserTransaction().
     // =======================================================
 
     @Override
@@ -501,16 +530,6 @@ public class UserDAO implements IUserDAO {
                                 CALL_INSERT_USER
                         )
         ) {
-
-            /*
-             * Thu tu parameter phai trung voi:
-             *
-             * insert_user(
-             *     user_name,
-             *     user_email,
-             *     user_country
-             * )
-             */
 
             callableStatement.setString(
                     1,
@@ -529,6 +548,229 @@ public class UserDAO implements IUserDAO {
 
 
             callableStatement.executeUpdate();
+        }
+    }
+
+
+    // =======================================================
+    // JDBC TRANSACTION
+    //
+    // 1. setAutoCommit(false)
+    //
+    // 2. INSERT users
+    //
+    // 3. Lay generated user ID
+    //
+    // 4. INSERT user_permission
+    //
+    // 5. commit()
+    //
+    // Neu loi:
+    //
+    // rollback()
+    // =======================================================
+
+    @Override
+    public void addUserTransaction(
+            User user,
+            int[] permissionIds
+    ) throws SQLException {
+
+        Connection connection = null;
+
+
+        try {
+
+            connection =
+                    getConnection();
+
+
+            // ===============================================
+            // BAT DAU TRANSACTION
+            // ===============================================
+
+            connection.setAutoCommit(
+                    false
+            );
+
+
+            int userId;
+
+
+            // ===============================================
+            // INSERT USER
+            // VA LAY GENERATED ID
+            // ===============================================
+
+            try (
+                    PreparedStatement userStatement =
+                            connection.prepareStatement(
+                                    INSERT_USER_TRANSACTION_SQL,
+                                    Statement.RETURN_GENERATED_KEYS
+                            )
+            ) {
+
+                userStatement.setString(
+                        1,
+                        user.getName()
+                );
+
+                userStatement.setString(
+                        2,
+                        user.getEmail()
+                );
+
+                userStatement.setString(
+                        3,
+                        user.getCountry()
+                );
+
+
+                int affectedRows =
+                        userStatement.executeUpdate();
+
+
+                if (affectedRows != 1) {
+
+                    throw new SQLException(
+                            "Khong the them User."
+                    );
+                }
+
+
+                try (
+                        ResultSet generatedKeys =
+                                userStatement.getGeneratedKeys()
+                ) {
+
+
+                    if (!generatedKeys.next()) {
+
+                        throw new SQLException(
+                                "Khong lay duoc ID User moi."
+                        );
+                    }
+
+
+                    userId =
+                            generatedKeys.getInt(1);
+                }
+            }
+
+
+            // ===============================================
+            // INSERT USER_PERMISSION
+            // ===============================================
+
+            if (
+                    permissionIds != null
+                    && permissionIds.length > 0
+            ) {
+
+                try (
+                        PreparedStatement permissionStatement =
+                                connection.prepareStatement(
+                                        INSERT_USER_PERMISSION_SQL
+                                )
+                ) {
+
+                    for (
+                            int permissionId
+                            : permissionIds
+                    ) {
+
+                        permissionStatement.setInt(
+                                1,
+                                userId
+                        );
+
+                        permissionStatement.setInt(
+                                2,
+                                permissionId
+                        );
+
+
+                        permissionStatement.addBatch();
+                    }
+
+
+                    permissionStatement.executeBatch();
+                }
+            }
+
+
+            // ===============================================
+            // TAT CA THANH CONG
+            // ===============================================
+
+            connection.commit();
+
+
+            System.out.println(
+                    "Transaction committed successfully."
+            );
+
+        } catch (SQLException exception) {
+
+
+            // ===============================================
+            // CO BAT KY LOI NAO -> ROLLBACK
+            // ===============================================
+
+            if (connection != null) {
+
+                try {
+
+                    connection.rollback();
+
+
+                    System.out.println(
+                            "Transaction rolled back."
+                    );
+
+                } catch (SQLException rollbackException) {
+
+                    exception.addSuppressed(
+                            rollbackException
+                    );
+                }
+            }
+
+
+            /*
+             * Khong nuot loi.
+             *
+             * Nem lai exception de Servlet biet
+             * transaction that bai.
+             */
+            throw exception;
+
+        } finally {
+
+
+            if (connection != null) {
+
+                try {
+
+                    connection.setAutoCommit(
+                            true
+                    );
+
+                } catch (SQLException autoCommitException) {
+
+                    autoCommitException.printStackTrace();
+                }
+
+
+                try {
+
+                    connection.close();
+
+                } catch (SQLException closeException) {
+
+                    closeException.printStackTrace();
+                }
+            }
         }
     }
 

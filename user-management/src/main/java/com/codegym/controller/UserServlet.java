@@ -15,13 +15,14 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Controller User Management.
+ * Controller cho User Management.
  *
  * Ho tro:
  * - CRUD
  * - Search Country
  * - Sort Name
- * - Stored Procedures
+ * - Stored Procedure
+ * - JDBC Transaction
  */
 @WebServlet(
         name = "UserServlet",
@@ -207,7 +208,7 @@ public class UserServlet extends HttpServlet {
         } catch (SQLException exception) {
 
             throw new ServletException(
-                    "Database error",
+                    "Database transaction error",
                     exception
             );
         }
@@ -370,7 +371,7 @@ public class UserServlet extends HttpServlet {
 
 
     // =======================================================
-    // SHOW CREATE
+    // CREATE FORM
     // =======================================================
 
     private void showNewForm(
@@ -393,19 +394,9 @@ public class UserServlet extends HttpServlet {
 
 
     // =======================================================
-    // SHOW EDIT
+    // EDIT FORM
     //
-    // DAY LA CHO DUOC CAP NHAT:
-    //
-    // selectUser(id)
-    //
-    // ->
-    //
-    // getUserById(id)
-    //
-    // ->
-    //
-    // CALL get_user_by_id(?)
+    // Van dung Stored Procedure cua bai truoc.
     // =======================================================
 
     private void showEditForm(
@@ -473,12 +464,7 @@ public class UserServlet extends HttpServlet {
 
 
     // =======================================================
-    // SHOW DELETE
-    //
-    // Bai tap chi yeu cau Stored Procedure
-    // cho get-by-id cua Edit va Insert.
-    //
-    // Chuc nang Delete van duoc giu nguyen.
+    // DELETE FORM
     // =======================================================
 
     private void showDeleteForm(
@@ -546,19 +532,7 @@ public class UserServlet extends HttpServlet {
 
 
     // =======================================================
-    // INSERT
-    //
-    // DAY LA CHO DUOC CAP NHAT:
-    //
-    // insertUser(newUser)
-    //
-    // ->
-    //
-    // insertUserStore(newUser)
-    //
-    // ->
-    //
-    // CALL insert_user(?, ?, ?)
+    // CREATE USER BANG JDBC TRANSACTION
     // =======================================================
 
     private void insertUser(
@@ -585,6 +559,49 @@ public class UserServlet extends HttpServlet {
                 );
 
 
+        // ===============================================
+        // NHAN NHIEU CHECKBOX:
+        //
+        // permissions=1
+        // permissions=4
+        //
+        // ->
+        //
+        // String[] {"1", "4"}
+        // ===============================================
+
+        String[] permissionsString =
+                request.getParameterValues(
+                        "permissions"
+                );
+
+
+        int[] permissions =
+                null;
+
+
+        if (permissionsString != null) {
+
+            permissions =
+                    new int[
+                            permissionsString.length
+                    ];
+
+
+            for (
+                    int i = 0;
+                    i < permissionsString.length;
+                    i++
+            ) {
+
+                permissions[i] =
+                        Integer.parseInt(
+                                permissionsString[i]
+                        );
+            }
+        }
+
+
         User newUser =
                 new User(
                         name,
@@ -593,22 +610,28 @@ public class UserServlet extends HttpServlet {
                 );
 
 
-        userDAO.insertUserStore(
-                newUser
+        // ===============================================
+        // TRANSACTION:
+        //
+        // INSERT users
+        // +
+        // INSERT user_permission
+        //
+        // commit / rollback
+        // ===============================================
+
+        userDAO.addUserTransaction(
+                newUser,
+                permissions
         );
 
 
-        /*
-         * PRG Pattern:
-         *
-         * POST
-         * ->
-         * Redirect
-         * ->
-         * GET
-         *
-         * Tranh insert lai khi F5.
-         */
+        // ===============================================
+        // PRG:
+        //
+        // POST -> REDIRECT -> GET
+        // ===============================================
+
         response.sendRedirect(
                 request.getContextPath()
                 + "/users"
@@ -617,7 +640,7 @@ public class UserServlet extends HttpServlet {
 
 
     // =======================================================
-    // UPDATE
+    // UPDATE USER
     // =======================================================
 
     private void updateUser(
@@ -674,7 +697,7 @@ public class UserServlet extends HttpServlet {
 
 
     // =======================================================
-    // DELETE
+    // DELETE USER
     // =======================================================
 
     private void deleteUser(

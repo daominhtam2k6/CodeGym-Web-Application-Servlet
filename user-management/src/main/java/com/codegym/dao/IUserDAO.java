@@ -12,7 +12,8 @@ import java.util.List;
  * - CRUD
  * - Search Country
  * - Sort Name
- * - Stored Procedures
+ * - Stored Procedure
+ * - JDBC Transaction
  */
 public interface IUserDAO {
 
@@ -31,27 +32,33 @@ public interface IUserDAO {
     boolean updateUser(User user)
             throws SQLException;
 
+
     List<User> searchByCountry(
             String country
     ) throws SQLException;
+
 
     List<User> sortByName()
             throws SQLException;
 
 
-    /**
-     * Goi Stored Procedure:
-     *
-     * get_user_by_id
-     */
     User getUserById(int id);
 
 
-    /**
-     * Goi Stored Procedure:
-     *
-     * insert_user
-     */
     void insertUserStore(User user)
             throws SQLException;
+
+
+    /**
+     * Them User va gan Permission
+     * trong cung mot JDBC Transaction.
+     *
+     * Neu bat ky thao tac nao loi:
+     *
+     * rollback toan bo transaction.
+     */
+    void addUserTransaction(
+            User user,
+            int[] permissionIds
+    ) throws SQLException;
 }
