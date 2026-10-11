@@ -1,0 +1,7 @@
+math-lib/target/
+calculator-app/target/
+.idea/
+*.iml
+*.class
+*.log
+.DS_Store
