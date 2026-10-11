@@ -1,6 +1,6 @@
 # User Management - JDBC Transaction
 
-ÃƒÂ¡Ã‚Â»Ã‚Â¨ng dÃƒÂ¡Ã‚Â»Ã‚Â¥ng User Management sÃƒÂ¡Ã‚Â»Ã‚Â­ dÃƒÂ¡Ã‚Â»Ã‚Â¥ng:
+ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â¨ng dÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â¥ng User Management sÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â­ dÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â¥ng:
 
 - Java 17
 - JSP
@@ -14,7 +14,7 @@
 - CallableStatement
 - JDBC Transaction
 
-## ChÃƒÂ¡Ã‚Â»Ã‚Â©c nÃƒâ€žÃ†â€™ng
+## ChÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â©c nÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€ Ã¢â‚¬â„¢ng
 
 - List User
 - Create User
@@ -27,17 +27,17 @@
 
 ## Transaction Database
 
-ChÃƒÂ¡Ã‚ÂºÃ‚Â¡y:
+ChÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¡y:
 
 transaction-setup.sql
 
-File nÃƒÆ’Ã‚Â y tÃƒÂ¡Ã‚ÂºÃ‚Â¡o:
+File nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¡o:
 
 permission
 
 user_permission
 
-Permission mÃƒÂ¡Ã‚ÂºÃ‚Â«u:
+Permission mÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â«u:
 
 1 = add
 
@@ -53,7 +53,7 @@ Method:
 
 addUserTransaction(User user, int[] permissionIds)
 
-CÃƒÆ’Ã‚Â¡c bÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºc:
+CÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡c bÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Âºc:
 
 1. connection.setAutoCommit(false)
 
@@ -67,21 +67,21 @@ CÃƒÆ’Ã‚Â¡c bÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºc:
 
 6. connection.commit()
 
-NÃƒÂ¡Ã‚ÂºÃ‚Â¿u lÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i:
+NÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿u lÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Âi:
 
 connection.rollback()
 
 ## Create User
 
-create.jsp cÃƒÆ’Ã‚Â³ checkbox:
+create.jsp cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ checkbox:
 
 permissions
 
-Servlet Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã‚Âc bÃƒÂ¡Ã‚ÂºÃ‚Â±ng:
+Servlet ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Âc bÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â±ng:
 
 request.getParameterValues("permissions")
 
-Sau Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â³ chuyÃƒÂ¡Ã‚Â»Ã†â€™n thÃƒÆ’Ã‚Â nh int[].
+Sau ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ chuyÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢n thÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â nh int[].
 
 ## URL
 
@@ -100,7 +100,7 @@ WAR:
 target/user-management.war
 # Without Transaction Demo
 
-BÃƒÂ i thÃ¡Â»Â±c hÃƒÂ nh mÃƒÂ´ phÃ¡Â»Âng nhiÃ¡Â»Âu cÃƒÂ¢u SQL phÃ¡Â»Â¥ thuÃ¡Â»â„¢c nhau nhÃ†Â°ng khÃƒÂ´ng sÃ¡Â»Â­ dÃ¡Â»Â¥ng Transaction.
+BÃƒÆ’Ã‚Â i thÃƒÂ¡Ã‚Â»Ã‚Â±c hÃƒÆ’Ã‚Â nh mÃƒÆ’Ã‚Â´ phÃƒÂ¡Ã‚Â»Ã‚Âng nhiÃƒÂ¡Ã‚Â»Ã‚Âu cÃƒÆ’Ã‚Â¢u SQL phÃƒÂ¡Ã‚Â»Ã‚Â¥ thuÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢c nhau nhÃƒâ€ Ã‚Â°ng khÃƒÆ’Ã‚Â´ng sÃƒÂ¡Ã‚Â»Ã‚Â­ dÃƒÂ¡Ã‚Â»Ã‚Â¥ng Transaction.
 
 ## Method
 
@@ -112,7 +112,7 @@ UserDAO:
 
 insertUpdateWithoutTransaction()
 
-## LuÃ¡Â»â€œng
+## LuÃƒÂ¡Ã‚Â»Ã¢â‚¬Å“ng
 
 1. DROP Employee
 
@@ -122,65 +122,65 @@ insertUpdateWithoutTransaction()
 
 4. INSERT Ngan
 
-5. CÃ¡Â»â€˜ tÃƒÂ¬nh thÃ¡Â»Â±c thi UPDATE lÃ¡Â»â€”i
+5. CÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ tÃƒÆ’Ã‚Â¬nh thÃƒÂ¡Ã‚Â»Ã‚Â±c thi UPDATE lÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i
 
-VÃƒÂ¬ khÃƒÂ´ng gÃ¡Â»Âi:
+VÃƒÆ’Ã‚Â¬ khÃƒÆ’Ã‚Â´ng gÃƒÂ¡Ã‚Â»Ã‚Âi:
 
 connection.setAutoCommit(false)
 
-nÃƒÂªn JDBC sÃ¡Â»Â­ dÃ¡Â»Â¥ng autoCommit mÃ¡ÂºÂ·c Ã„â€˜Ã¡Â»â€¹nh.
+nÃƒÆ’Ã‚Âªn JDBC sÃƒÂ¡Ã‚Â»Ã‚Â­ dÃƒÂ¡Ã‚Â»Ã‚Â¥ng autoCommit mÃƒÂ¡Ã‚ÂºÃ‚Â·c Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹nh.
 
-Hai INSERT Ã„â€˜Ã†Â°Ã¡Â»Â£c commit trÃ†Â°Ã¡Â»â€ºc khi UPDATE bÃ¡Â»â€¹ lÃ¡Â»â€”i.
+Hai INSERT Ãƒâ€žÃ¢â‚¬ËœÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£c commit trÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºc khi UPDATE bÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ lÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i.
 
 ## URL test
 
 http://localhost:8080/user-management/users?action=test-without-tran
 
-## KiÃ¡Â»Æ’m tra MySQL
+## KiÃƒÂ¡Ã‚Â»Ã†â€™m tra MySQL
 
 SELECT *
 FROM Employee;
 
-KÃ¡ÂºÂ¿t quÃ¡ÂºÂ£ mong Ã„â€˜Ã¡Â»Â£i:
+KÃƒÂ¡Ã‚ÂºÃ‚Â¿t quÃƒÂ¡Ã‚ÂºÃ‚Â£ mong Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã‚Â£i:
 
 Quynh - 10
 
 Ngan - 20
 
-Quynh KHÃƒâ€NG Ã„â€˜Ã†Â°Ã¡Â»Â£c update thÃƒÂ nh 999.99.
+Quynh KHÃƒÆ’Ã¢â‚¬ÂNG Ãƒâ€žÃ¢â‚¬ËœÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£c update thÃƒÆ’Ã‚Â nh 999.99.
 
-## ÃƒÂ nghÃ„Â©a
+## ÃƒÆ’Ã‚Â nghÃƒâ€žÃ‚Â©a
 
-KhÃƒÂ´ng cÃƒÂ³ Transaction:
+KhÃƒÆ’Ã‚Â´ng cÃƒÆ’Ã‚Â³ Transaction:
 
-INSERT thÃƒÂ nh cÃƒÂ´ng Ã„â€˜Ã†Â°Ã¡Â»Â£c commit ngay.
+INSERT thÃƒÆ’Ã‚Â nh cÃƒÆ’Ã‚Â´ng Ãƒâ€žÃ¢â‚¬ËœÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£c commit ngay.
 
-SQL tiÃ¡ÂºÂ¿p theo thÃ¡ÂºÂ¥t bÃ¡ÂºÂ¡i khÃƒÂ´ng thÃ¡Â»Æ’ tÃ¡Â»Â± Ã„â€˜Ã¡Â»â„¢ng hoÃƒÂ n tÃƒÂ¡c cÃƒÂ¡c lÃ¡Â»â€¡nh trÃ†Â°Ã¡Â»â€ºc.
+SQL tiÃƒÂ¡Ã‚ÂºÃ‚Â¿p theo thÃƒÂ¡Ã‚ÂºÃ‚Â¥t bÃƒÂ¡Ã‚ÂºÃ‚Â¡i khÃƒÆ’Ã‚Â´ng thÃƒÂ¡Ã‚Â»Ã†â€™ tÃƒÂ¡Ã‚Â»Ã‚Â± Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢ng hoÃƒÆ’Ã‚Â n tÃƒÆ’Ã‚Â¡c cÃƒÆ’Ã‚Â¡c lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡nh trÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºc.
 
-Ã„ÂÃƒÂ¢y lÃƒÂ  tÃƒÂ¬nh huÃ¡Â»â€˜ng dÃ¡Â»Â¯ liÃ¡Â»â€¡u Ã„â€˜Ã†Â°Ã¡Â»Â£c cÃ¡ÂºÂ­p nhÃ¡ÂºÂ­t mÃ¡Â»â„¢t phÃ¡ÂºÂ§n.
+Ãƒâ€žÃ‚ÂÃƒÆ’Ã‚Â¢y lÃƒÆ’Ã‚Â  tÃƒÆ’Ã‚Â¬nh huÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœng dÃƒÂ¡Ã‚Â»Ã‚Â¯ liÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u Ãƒâ€žÃ¢â‚¬ËœÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£c cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­t mÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢t phÃƒÂ¡Ã‚ÂºÃ‚Â§n.
 # JDBC Transaction Employee Test
 
-## KhÃ´ng Transaction
+## KhÃƒÂ´ng Transaction
 
 URL:
 
 http://localhost:8080/user-management/users?action=test-without-tran
 
-Káº¿t quáº£ khi UPDATE lá»—i:
+KÃ¡ÂºÂ¿t quÃ¡ÂºÂ£ khi UPDATE lÃ¡Â»â€”i:
 
 Quynh = 10
 
 Ngan = 20
 
-Hai INSERT váº«n tá»“n táº¡i.
+Hai INSERT vÃ¡ÂºÂ«n tÃ¡Â»â€œn tÃ¡ÂºÂ¡i.
 
-## CÃ³ Transaction
+## CÃƒÂ³ Transaction
 
 URL:
 
 http://localhost:8080/user-management/users?action=test-use-tran
 
-Luá»“ng:
+LuÃ¡Â»â€œng:
 
 connection.setAutoCommit(false)
 
@@ -190,46 +190,46 @@ INSERT Ngan
 
 UPDATE Quynh
 
-Náº¿u táº¥t cáº£ thÃ nh cÃ´ng:
+NÃ¡ÂºÂ¿u tÃ¡ÂºÂ¥t cÃ¡ÂºÂ£ thÃƒÂ nh cÃƒÂ´ng:
 
 connection.commit()
 
-Náº¿u cÃ³ lá»—i:
+NÃ¡ÂºÂ¿u cÃƒÂ³ lÃ¡Â»â€”i:
 
 connection.rollback()
 
-## Láº§n 1 - cá»‘ tÃ¬nh gÃ¢y lá»—i
+## LÃ¡ÂºÂ§n 1 - cÃ¡Â»â€˜ tÃƒÂ¬nh gÃƒÂ¢y lÃ¡Â»â€”i
 
 Code:
 
 psUpdate.setBigDecimal(2, new BigDecimal("999.99"));
 
-Parameter 1 bá»‹ thiáº¿u.
+Parameter 1 bÃ¡Â»â€¹ thiÃ¡ÂºÂ¿u.
 
-Káº¿t quáº£:
+KÃ¡ÂºÂ¿t quÃ¡ÂºÂ£:
 
 SELECT * FROM Employee;
 
-Báº£ng rá»—ng.
+BÃ¡ÂºÂ£ng rÃ¡Â»â€”ng.
 
-## Láº§n 2 - sá»­a lá»—i
+## LÃ¡ÂºÂ§n 2 - sÃ¡Â»Â­a lÃ¡Â»â€”i
 
-Äá»•i thÃ nh:
+Ã„ÂÃ¡Â»â€¢i thÃƒÂ nh:
 
 psUpdate.setBigDecimal(1, new BigDecimal("999.99"));
 
-Sau Ä‘Ã³ build vÃ  deploy láº¡i.
+Sau Ã„â€˜ÃƒÂ³ build vÃƒÂ  deploy lÃ¡ÂºÂ¡i.
 
-Káº¿t quáº£:
+KÃ¡ÂºÂ¿t quÃ¡ÂºÂ£:
 
 Quynh = 999.99
 
 Ngan = 20
 
-Hai INSERT vÃ  má»™t UPDATE Ä‘Æ°á»£c commit cÃ¹ng nhau.
+Hai INSERT vÃƒÂ  mÃ¡Â»â„¢t UPDATE Ã„â€˜Ã†Â°Ã¡Â»Â£c commit cÃƒÂ¹ng nhau.
 # Stored Procedure CRUD Update
 
-Các chức năng User Management hiện sử dụng Stored Procedure:
+CÃ¡c chá»©c nÄƒng User Management hiá»‡n sá»­ dá»¥ng Stored Procedure:
 
 ## List
 
@@ -255,7 +255,7 @@ Method:
 
 getUserById()
 
-Được dùng khi mở Edit và Delete confirmation.
+ÄÆ°á»£c dÃ¹ng khi má»Ÿ Edit vÃ  Delete confirmation.
 
 ## Update
 
@@ -286,21 +286,100 @@ deleteUserStore(int id)
 
 ## Create
 
-Project vẫn giữ:
+Project váº«n giá»¯:
 
 insert_user(...)
 
-và bài JDBC Transaction User + Permission.
+vÃ  bÃ i JDBC Transaction User + Permission.
 
-Luồng Create hiện tại có thể tiếp tục sử dụng addUserTransaction()
-để bảo toàn bài Transaction trước.
+Luá»“ng Create hiá»‡n táº¡i cÃ³ thá»ƒ tiáº¿p tá»¥c sá»­ dá»¥ng addUserTransaction()
+Ä‘á»ƒ báº£o toÃ n bÃ i Transaction trÆ°á»›c.
 
 ## Stored Procedure File
 
 stored-procedures.sql
 
-Phải chạy lại file này trong database demo trước khi test.
+Pháº£i cháº¡y láº¡i file nÃ y trong database demo trÆ°á»›c khi test.
 
 ## URL
 
 http://localhost:8080/user-management/users
+# JDBC Transaction Rollback Practice
+
+Bài tập cập nhật phương thức:
+
+addUserTransaction()
+
+## Mục tiêu
+
+Quan sát commit() và rollback() trong JDBC.
+
+## Kịch bản
+
+1. connection.setAutoCommit(false)
+
+2. INSERT User
+
+3. Lấy generated User ID
+
+4. INSERT các Permission đã chọn
+
+5. Cố tình INSERT permission_id = 999999
+
+6. Foreign Key sinh SQLException
+
+7. connection.rollback()
+
+## Kết quả
+
+User đã INSERT ở bước đầu KHÔNG được lưu.
+
+Các dòng user_permission trước lỗi cũng KHÔNG được lưu.
+
+Đây là nguyên lý:
+
+All-or-Nothing
+
+và Atomicity trong ACID.
+
+## Test
+
+Mở:
+
+http://localhost:8080/user-management/users?action=create
+
+Nhập ví dụ:
+
+Name:
+
+Transaction Test
+
+Email:
+
+transaction-test@codegym.vn
+
+Country:
+
+Viet Nam
+
+Chọn:
+
+Add
+
+View
+
+Sau khi Submit, ứng dụng cố tình phát sinh lỗi SQL.
+
+## Kiểm tra
+
+SELECT *
+FROM users
+WHERE email = 'transaction-test@codegym.vn';
+
+Kết quả mong đợi:
+
+0 rows
+
+## File kiểm tra
+
+transaction-practice-check.sql
