@@ -279,20 +279,20 @@ public class UserServlet extends HttpServlet {
                 + "padding:30px;"
                 + "border-radius:12px;'>"
                 + "<h1 style='color:#1b2a7a;'>"
-                + "ÄÃ£ cháº¡y test khÃ´ng sá»­ dá»¥ng Transaction"
+                + "Ã„ÂÃƒÂ£ chÃ¡ÂºÂ¡y test khÃƒÂ´ng sÃ¡Â»Â­ dÃ¡Â»Â¥ng Transaction"
                 + "</h1>"
-                + "<p>Hai INSERT Ä‘Æ°á»£c thá»±c thi trÆ°á»›c khi UPDATE bá»‹ lá»—i.</p>"
-                + "<p>HÃ£y kiá»ƒm tra Console Tomcat vÃ  cháº¡y:</p>"
+                + "<p>Hai INSERT Ã„â€˜Ã†Â°Ã¡Â»Â£c thÃ¡Â»Â±c thi trÃ†Â°Ã¡Â»â€ºc khi UPDATE bÃ¡Â»â€¹ lÃ¡Â»â€”i.</p>"
+                + "<p>HÃƒÂ£y kiÃ¡Â»Æ’m tra Console Tomcat vÃƒÂ  chÃ¡ÂºÂ¡y:</p>"
                 + "<pre>SELECT * FROM Employee;</pre>"
-                + "<p>Káº¿t quáº£ mong Ä‘á»£i:</p>"
+                + "<p>KÃ¡ÂºÂ¿t quÃ¡ÂºÂ£ mong Ã„â€˜Ã¡Â»Â£i:</p>"
                 + "<ul>"
                 + "<li>Quynh - salary 10</li>"
                 + "<li>Ngan - salary 20</li>"
                 + "</ul>"
-                + "<p>Quynh khÃ´ng Ä‘Æ°á»£c cáº­p nháº­t lÃªn 999.99.</p>"
+                + "<p>Quynh khÃƒÂ´ng Ã„â€˜Ã†Â°Ã¡Â»Â£c cÃ¡ÂºÂ­p nhÃ¡ÂºÂ­t lÃƒÂªn 999.99.</p>"
                 + "<a href='"
                 + request.getContextPath()
-                + "/users'>Quay láº¡i User Management</a>"
+                + "/users'>Quay lÃ¡ÂºÂ¡i User Management</a>"
                 + "</div>"
                 + "</body>"
                 + "</html>"
@@ -346,20 +346,20 @@ public class UserServlet extends HttpServlet {
                 + "<h1 style='color:#1b2a7a;'>"
                 + "JDBC Transaction Test"
                 + "</h1>"
-                + "<p>Đã thực thi kịch bản INSERT + INSERT + UPDATE.</p>"
-                + "<p>Hãy kiểm tra Console Tomcat và MySQL.</p>"
+                + "<p>ÄÃ£ thá»±c thi ká»‹ch báº£n INSERT + INSERT + UPDATE.</p>"
+                + "<p>HÃ£y kiá»ƒm tra Console Tomcat vÃ  MySQL.</p>"
                 + "<pre>"
                 + "USE demo;\n"
                 + "SELECT * FROM Employee;"
                 + "</pre>"
-                + "<p><strong>Lần 1:</strong> "
-                + "UPDATE đang cố tình lỗi nên bảng Employee phải rỗng.</p>"
-                + "<p><strong>Lần 2:</strong> "
-                + "sửa parameter index thành 1, "
-                + "bảng sẽ có Quynh=999.99 và Ngan=20.</p>"
+                + "<p><strong>Láº§n 1:</strong> "
+                + "UPDATE Ä‘ang cá»‘ tÃ¬nh lá»—i nÃªn báº£ng Employee pháº£i rá»—ng.</p>"
+                + "<p><strong>Láº§n 2:</strong> "
+                + "sá»­a parameter index thÃ nh 1, "
+                + "báº£ng sáº½ cÃ³ Quynh=999.99 vÃ  Ngan=20.</p>"
                 + "<a href='"
                 + request.getContextPath()
-                + "/users'>Quay lại User Management</a>"
+                + "/users'>Quay láº¡i User Management</a>"
                 + "</main>"
                 + "</body>"
                 + "</html>"
@@ -374,7 +374,7 @@ public class UserServlet extends HttpServlet {
             IOException {
 
         List<User> listUser =
-                userDAO.selectAllUsers();
+                userDAO.selectAllUsersStore();
 
 
         request.setAttribute(
@@ -385,7 +385,7 @@ public class UserServlet extends HttpServlet {
 
         request.setAttribute(
                 "pageTitle",
-                "Danh sÃƒÂ¡ch tÃ¡ÂºÂ¥t cÃ¡ÂºÂ£ User"
+                "Danh sÃƒÆ’Ã‚Â¡ch tÃƒÂ¡Ã‚ÂºÃ‚Â¥t cÃƒÂ¡Ã‚ÂºÃ‚Â£ User"
         );
 
 
@@ -447,7 +447,7 @@ public class UserServlet extends HttpServlet {
 
         request.setAttribute(
                 "pageTitle",
-                "KÃ¡ÂºÂ¿t quÃ¡ÂºÂ£ tÃƒÂ¬m kiÃ¡ÂºÂ¿m theo country"
+                "KÃƒÂ¡Ã‚ÂºÃ‚Â¿t quÃƒÂ¡Ã‚ÂºÃ‚Â£ tÃƒÆ’Ã‚Â¬m kiÃƒÂ¡Ã‚ÂºÃ‚Â¿m theo country"
         );
 
 
@@ -487,7 +487,7 @@ public class UserServlet extends HttpServlet {
 
         request.setAttribute(
                 "pageTitle",
-                "Danh sÃƒÂ¡ch sÃ¡ÂºÂ¯p xÃ¡ÂºÂ¿p Name A-Z"
+                "Danh sÃƒÆ’Ã‚Â¡ch sÃƒÂ¡Ã‚ÂºÃ‚Â¯p xÃƒÂ¡Ã‚ÂºÃ‚Â¿p Name A-Z"
         );
 
 
@@ -645,7 +645,7 @@ public class UserServlet extends HttpServlet {
 
 
         User user =
-                userDAO.selectUser(id);
+                userDAO.getUserById(id);
 
 
         if (user == null) {
@@ -831,7 +831,7 @@ public class UserServlet extends HttpServlet {
                 );
 
 
-        userDAO.updateUser(
+        userDAO.updateUserStore(
                 user
         );
 
@@ -861,7 +861,7 @@ public class UserServlet extends HttpServlet {
                 );
 
 
-        userDAO.deleteUser(id);
+        userDAO.deleteUserStore(id);
 
 
         response.sendRedirect(

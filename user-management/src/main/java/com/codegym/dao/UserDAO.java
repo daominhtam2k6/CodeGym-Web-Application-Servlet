@@ -183,6 +183,23 @@ public class UserDAO implements IUserDAO {
     private static final String SQL_EMPLOYEE_DROP_USE_TRANSACTION =
             "DROP TABLE IF EXISTS Employee";
 
+    
+    // =======================================================
+    // STORED PROCEDURES:
+    // LIST / UPDATE / DELETE
+    // =======================================================
+
+    private static final String CALL_GET_ALL_USERS =
+            "{CALL get_all_users()}";
+
+
+    private static final String CALL_UPDATE_USER =
+            "{CALL update_user(?, ?, ?, ?)}";
+
+
+    private static final String CALL_DELETE_USER =
+            "{CALL delete_user(?)}";
+
     public UserDAO() {
     }
 
@@ -1320,6 +1337,134 @@ public class UserDAO implements IUserDAO {
                     closeException.printStackTrace();
                 }
             }
+        }
+    }
+
+    
+    // =======================================================
+    // STORED PROCEDURE:
+    // get_all_users()
+    // =======================================================
+
+    @Override
+    public List<User> selectAllUsersStore()
+            throws SQLException {
+
+        List<User> users =
+                new ArrayList<>();
+
+
+        try (
+                Connection connection =
+                        getConnection();
+
+                CallableStatement callableStatement =
+                        connection.prepareCall(
+                                CALL_GET_ALL_USERS
+                        );
+
+                ResultSet resultSet =
+                        callableStatement.executeQuery()
+        ) {
+
+            while (resultSet.next()) {
+
+                users.add(
+                        mapUser(
+                                resultSet
+                        )
+                );
+            }
+        }
+
+
+        return users;
+    }
+
+
+    // =======================================================
+    // STORED PROCEDURE:
+    // update_user(?, ?, ?, ?)
+    //
+    // Parameter:
+    //
+    // 1 = id
+    // 2 = name
+    // 3 = email
+    // 4 = country
+    // =======================================================
+
+    @Override
+    public void updateUserStore(
+            User user
+    ) throws SQLException {
+
+        try (
+                Connection connection =
+                        getConnection();
+
+                CallableStatement callableStatement =
+                        connection.prepareCall(
+                                CALL_UPDATE_USER
+                        )
+        ) {
+
+            callableStatement.setInt(
+                    1,
+                    user.getId()
+            );
+
+
+            callableStatement.setString(
+                    2,
+                    user.getName()
+            );
+
+
+            callableStatement.setString(
+                    3,
+                    user.getEmail()
+            );
+
+
+            callableStatement.setString(
+                    4,
+                    user.getCountry()
+            );
+
+
+            callableStatement.executeUpdate();
+        }
+    }
+
+
+    // =======================================================
+    // STORED PROCEDURE:
+    // delete_user(?)
+    // =======================================================
+
+    @Override
+    public void deleteUserStore(
+            int id
+    ) throws SQLException {
+
+        try (
+                Connection connection =
+                        getConnection();
+
+                CallableStatement callableStatement =
+                        connection.prepareCall(
+                                CALL_DELETE_USER
+                        )
+        ) {
+
+            callableStatement.setInt(
+                    1,
+                    id
+            );
+
+
+            callableStatement.executeUpdate();
         }
     }
 

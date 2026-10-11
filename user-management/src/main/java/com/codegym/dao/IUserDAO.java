@@ -81,4 +81,24 @@ public interface IUserDAO {
      */
     void insertUpdateUseTransaction()
             throws SQLException;
+
+    /**
+     * Lay danh sach User bang Stored Procedure.
+     */
+    List<User> selectAllUsersStore()
+            throws SQLException;
+
+
+    /**
+     * Update User bang Stored Procedure.
+     */
+    void updateUserStore(User user)
+            throws SQLException;
+
+
+    /**
+     * Delete User bang Stored Procedure.
+     */
+    void deleteUserStore(int id)
+            throws SQLException;
 }
