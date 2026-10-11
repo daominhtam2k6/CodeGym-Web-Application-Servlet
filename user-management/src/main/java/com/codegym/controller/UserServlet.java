@@ -118,6 +118,16 @@ public class UserServlet extends HttpServlet {
                     break;
 
 
+                
+                case "test-without-tran":
+
+                    testWithoutTran(
+                            request,
+                            response
+                    );
+
+                    break;
+
                 default:
 
                     listUsers(
@@ -219,6 +229,66 @@ public class UserServlet extends HttpServlet {
     // LIST
     // =======================================================
 
+    
+    // =======================================================
+    // TEST SQL KHONG SU DUNG TRANSACTION
+    // =======================================================
+
+    private void testWithoutTran(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) throws IOException {
+
+        userDAO.insertUpdateWithoutTransaction();
+
+
+        System.out.println(
+                "Da chay xong testWithoutTran. "
+                + "Hay kiem tra bang Employee trong MySQL."
+        );
+
+
+        response.setContentType(
+                "text/html;charset=UTF-8"
+        );
+
+
+        response.getWriter().println(
+                "<!DOCTYPE html>"
+                + "<html lang='vi'>"
+                + "<head>"
+                + "<meta charset='UTF-8'>"
+                + "<title>Test Without Transaction</title>"
+                + "</head>"
+                + "<body style='font-family:Arial;"
+                + "padding:40px;"
+                + "background:#f8fafc;'>"
+                + "<div style='max-width:700px;"
+                + "margin:auto;"
+                + "background:white;"
+                + "padding:30px;"
+                + "border-radius:12px;'>"
+                + "<h1 style='color:#1b2a7a;'>"
+                + "Đã chạy test không sử dụng Transaction"
+                + "</h1>"
+                + "<p>Hai INSERT được thực thi trước khi UPDATE bị lỗi.</p>"
+                + "<p>Hãy kiểm tra Console Tomcat và chạy:</p>"
+                + "<pre>SELECT * FROM Employee;</pre>"
+                + "<p>Kết quả mong đợi:</p>"
+                + "<ul>"
+                + "<li>Quynh - salary 10</li>"
+                + "<li>Ngan - salary 20</li>"
+                + "</ul>"
+                + "<p>Quynh không được cập nhật lên 999.99.</p>"
+                + "<a href='"
+                + request.getContextPath()
+                + "/users'>Quay lại User Management</a>"
+                + "</div>"
+                + "</body>"
+                + "</html>"
+        );
+    }
+
     private void listUsers(
             HttpServletRequest request,
             HttpServletResponse response
@@ -238,7 +308,7 @@ public class UserServlet extends HttpServlet {
 
         request.setAttribute(
                 "pageTitle",
-                "Danh sách tất cả User"
+                "Danh sÃ¡ch táº¥t cáº£ User"
         );
 
 
@@ -300,7 +370,7 @@ public class UserServlet extends HttpServlet {
 
         request.setAttribute(
                 "pageTitle",
-                "Kết quả tìm kiếm theo country"
+                "Káº¿t quáº£ tÃ¬m kiáº¿m theo country"
         );
 
 
@@ -340,7 +410,7 @@ public class UserServlet extends HttpServlet {
 
         request.setAttribute(
                 "pageTitle",
-                "Danh sách sắp xếp Name A-Z"
+                "Danh sÃ¡ch sáº¯p xáº¿p Name A-Z"
         );
 
 

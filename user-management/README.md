@@ -1,6 +1,6 @@
 # User Management - JDBC Transaction
 
-Ứng dụng User Management sử dụng:
+á»¨ng dá»¥ng User Management sá»­ dá»¥ng:
 
 - Java 17
 - JSP
@@ -14,7 +14,7 @@
 - CallableStatement
 - JDBC Transaction
 
-## Chức năng
+## Chá»©c nÄƒng
 
 - List User
 - Create User
@@ -27,17 +27,17 @@
 
 ## Transaction Database
 
-Chạy:
+Cháº¡y:
 
 transaction-setup.sql
 
-File này tạo:
+File nÃ y táº¡o:
 
 permission
 
 user_permission
 
-Permission mẫu:
+Permission máº«u:
 
 1 = add
 
@@ -53,7 +53,7 @@ Method:
 
 addUserTransaction(User user, int[] permissionIds)
 
-Các bước:
+CÃ¡c bÆ°á»›c:
 
 1. connection.setAutoCommit(false)
 
@@ -67,21 +67,21 @@ Các bước:
 
 6. connection.commit()
 
-Nếu lỗi:
+Náº¿u lá»—i:
 
 connection.rollback()
 
 ## Create User
 
-create.jsp có checkbox:
+create.jsp cÃ³ checkbox:
 
 permissions
 
-Servlet đọc bằng:
+Servlet Ä‘á»c báº±ng:
 
 request.getParameterValues("permissions")
 
-Sau đó chuyển thành int[].
+Sau Ä‘Ã³ chuyá»ƒn thÃ nh int[].
 
 ## URL
 
@@ -98,3 +98,63 @@ mvn clean package
 WAR:
 
 target/user-management.war
+# Without Transaction Demo
+
+Bài thực hành mô phỏng nhiều câu SQL phụ thuộc nhau nhưng không sử dụng Transaction.
+
+## Method
+
+IUserDAO:
+
+insertUpdateWithoutTransaction()
+
+UserDAO:
+
+insertUpdateWithoutTransaction()
+
+## Luồng
+
+1. DROP Employee
+
+2. CREATE Employee
+
+3. INSERT Quynh
+
+4. INSERT Ngan
+
+5. Cố tình thực thi UPDATE lỗi
+
+Vì không gọi:
+
+connection.setAutoCommit(false)
+
+nên JDBC sử dụng autoCommit mặc định.
+
+Hai INSERT được commit trước khi UPDATE bị lỗi.
+
+## URL test
+
+http://localhost:8080/user-management/users?action=test-without-tran
+
+## Kiểm tra MySQL
+
+SELECT *
+FROM Employee;
+
+Kết quả mong đợi:
+
+Quynh - 10
+
+Ngan - 20
+
+Quynh KHÔNG được update thành 999.99.
+
+## Ý nghĩa
+
+Không có Transaction:
+
+INSERT thành công được commit ngay.
+
+SQL tiếp theo thất bại không thể tự động hoàn tác các lệnh trước.
+
+Đây là tình huống dữ liệu được cập nhật một phần.

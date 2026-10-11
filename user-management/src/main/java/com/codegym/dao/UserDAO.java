@@ -2,6 +2,8 @@ package com.codegym.dao;
 
 import com.codegym.model.User;
 
+import java.math.BigDecimal;
+
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,9 +11,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDateTime;
 
 /**
  * DAO User.
@@ -116,6 +120,37 @@ public class UserDAO implements IUserDAO {
             + "(user_id, permission_id) "
             + "VALUES (?, ?)";
 
+
+    
+    // =======================================================
+    // SQL DEMO KHONG SU DUNG TRANSACTION
+    // =======================================================
+
+    private static final String SQL_INSERT_EMPLOYEE_NO_TRANSACTION =
+            "INSERT INTO Employee "
+            + "(name, salary, created_Date) "
+            + "VALUES (?, ?, ?)";
+
+
+    private static final String SQL_UPDATE_EMPLOYEE_NO_TRANSACTION =
+            "UPDATE Employee "
+            + "SET salary = ? "
+            + "WHERE name = ?";
+
+
+    private static final String SQL_EMPLOYEE_TABLE_CREATE =
+            "CREATE TABLE Employee "
+            + "("
+            + " id INT AUTO_INCREMENT,"
+            + " name VARCHAR(100) NOT NULL,"
+            + " salary DECIMAL(15, 2) NOT NULL,"
+            + " created_Date TIMESTAMP,"
+            + " PRIMARY KEY (id)"
+            + ")";
+
+
+    private static final String SQL_EMPLOYEE_TABLE_DROP =
+            "DROP TABLE IF EXISTS Employee";
 
     public UserDAO() {
     }
@@ -778,6 +813,202 @@ public class UserDAO implements IUserDAO {
     // =======================================================
     // RESULTSET -> USER
     // =======================================================
+
+    
+    // =======================================================
+    // DEMO KHONG SU DUNG TRANSACTION
+    // =======================================================
+
+    @Override
+    public void insertUpdateWithoutTransaction() {
+
+        /*
+         * KHONG goi:
+         *
+         * connection.setAutoCommit(false)
+         *
+         * Nen JDBC su dung autoCommit = true.
+         *
+         * Moi execute thanh cong se duoc
+         * commit ngay lap tuc.
+         */
+
+        try (
+                Connection connection =
+                        getConnection();
+
+                Statement statement =
+                        connection.createStatement();
+
+                PreparedStatement psInsert =
+                        connection.prepareStatement(
+                                SQL_INSERT_EMPLOYEE_NO_TRANSACTION
+                        );
+
+                PreparedStatement psUpdate =
+                        connection.prepareStatement(
+                                SQL_UPDATE_EMPLOYEE_NO_TRANSACTION
+                        )
+        ) {
+
+            // ===============================================
+            // 1. RESET TABLE
+            // ===============================================
+
+            statement.execute(
+                    SQL_EMPLOYEE_TABLE_DROP
+            );
+
+
+            statement.execute(
+                    SQL_EMPLOYEE_TABLE_CREATE
+            );
+
+
+            System.out.println(
+                    "Employee table recreated."
+            );
+
+
+            // ===============================================
+            // 2. INSERT QUYNH
+            //
+            // autoCommit = true
+            //
+            // => duoc commit ngay
+            // ===============================================
+
+            psInsert.setString(
+                    1,
+                    "Quynh"
+            );
+
+
+            psInsert.setBigDecimal(
+                    2,
+                    new BigDecimal("10")
+            );
+
+
+            psInsert.setTimestamp(
+                    3,
+                    Timestamp.valueOf(
+                            LocalDateTime.now()
+                    )
+            );
+
+
+            psInsert.executeUpdate();
+
+
+            System.out.println(
+                    "Inserted Quynh successfully."
+            );
+
+
+            // ===============================================
+            // 3. INSERT NGAN
+            //
+            // autoCommit = true
+            //
+            // => cung duoc commit ngay
+            // ===============================================
+
+            psInsert.setString(
+                    1,
+                    "Ngan"
+            );
+
+
+            psInsert.setBigDecimal(
+                    2,
+                    new BigDecimal("20")
+            );
+
+
+            psInsert.setTimestamp(
+                    3,
+                    Timestamp.valueOf(
+                            LocalDateTime.now()
+                    )
+            );
+
+
+            psInsert.executeUpdate();
+
+
+            System.out.println(
+                    "Inserted Ngan successfully."
+            );
+
+
+            // ===============================================
+            // 4. CO TINH TAO LOI UPDATE
+            // ===============================================
+
+            /*
+             * SQL:
+             *
+             * UPDATE Employee
+             * SET salary = ?
+             * WHERE name = ?
+             *
+             * Dung ra:
+             *
+             * psUpdate.setBigDecimal(1, ...);
+             * psUpdate.setString(2, "Quynh");
+             *
+             * Nhung bai thuc hanh CO TINH KHONG GAN
+             * parameter index 1.
+             *
+             * Lenh duoi day gan index 2,
+             * sau do lai gan index 2 lan nua.
+             *
+             * Ket qua:
+             *
+             * parameter 1 bi thieu
+             * -> SQLException.
+             */
+
+
+            psUpdate.setBigDecimal(
+                    2,
+                    new BigDecimal("999.99")
+            );
+
+
+            psUpdate.setString(
+                    2,
+                    "Quynh"
+            );
+
+
+            // ===============================================
+            // DONG NAY SE PHAT SINH SQLException
+            // ===============================================
+
+            psUpdate.executeUpdate();
+
+
+        } catch (Exception exception) {
+
+
+            /*
+             * KHONG CO rollback().
+             *
+             * Vi hai INSERT truoc do
+             * da auto-commit thanh cong.
+             */
+
+
+            System.out.println(
+                    "Da bat duoc loi trong qua trinh thuc thi SQL:"
+            );
+
+
+            exception.printStackTrace();
+        }
+    }
 
     private User mapUser(
             ResultSet resultSet

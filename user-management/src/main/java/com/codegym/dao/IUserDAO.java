@@ -61,4 +61,14 @@ public interface IUserDAO {
             User user,
             int[] permissionIds
     ) throws SQLException;
+
+    /**
+     * Demo thuc thi nhieu SQL
+     * KHONG su dung Transaction.
+     *
+     * Hai INSERT se thanh cong,
+     * UPDATE sau do co tinh bi loi.
+     */
+    void insertUpdateWithoutTransaction()
+            throws SQLException;
 }
