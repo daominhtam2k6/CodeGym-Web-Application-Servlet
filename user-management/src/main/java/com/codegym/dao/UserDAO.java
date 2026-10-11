@@ -12,11 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Trien khai CRUD User bang JDBC va MySQL.
+ * Trien khai CRUD, Search va Sort
+ * bang JDBC + MySQL.
  *
  * LUU Y:
- * Hay doi jdbcUsername va jdbcPassword
- * cho dung voi MySQL tren may cua ban.
+ * Kiem tra jdbcUsername va jdbcPassword
+ * cho dung voi MySQL tren may.
  */
 public class UserDAO implements IUserDAO {
 
@@ -30,10 +31,6 @@ public class UserDAO implements IUserDAO {
     private final String jdbcUsername =
             "root";
 
-    /*
-     * DOI MAT KHAU NAY NEU MYSQL CUA BAN
-     * KHONG DUNG password.
-     */
     private final String jdbcPassword =
             "password";
 
@@ -65,6 +62,28 @@ public class UserDAO implements IUserDAO {
             "UPDATE users "
             + "SET name = ?, email = ?, country = ? "
             + "WHERE id = ?";
+
+
+    /*
+     * Tim country bang LIKE.
+     *
+     * Vi dung PreparedStatement nen
+     * tranh noi truc tiep input vao SQL.
+     */
+    private static final String SEARCH_BY_COUNTRY_SQL =
+            "SELECT id, name, email, country "
+            + "FROM users "
+            + "WHERE country LIKE ? "
+            + "ORDER BY id";
+
+
+    /*
+     * Sap xep name tang dan A-Z.
+     */
+    private static final String SORT_BY_NAME_SQL =
+            "SELECT id, name, email, country "
+            + "FROM users "
+            + "ORDER BY name ASC";
 
 
     public UserDAO() {
@@ -161,28 +180,9 @@ public class UserDAO implements IUserDAO {
 
                 if (resultSet.next()) {
 
-                    String name =
-                            resultSet.getString(
-                                    "name"
-                            );
-
-                    String email =
-                            resultSet.getString(
-                                    "email"
-                            );
-
-                    String country =
-                            resultSet.getString(
-                                    "country"
-                            );
-
-
                     user =
-                            new User(
-                                    id,
-                                    name,
-                                    email,
-                                    country
+                            mapUser(
+                                    resultSet
                             );
                 }
             }
@@ -216,33 +216,9 @@ public class UserDAO implements IUserDAO {
 
             while (resultSet.next()) {
 
-                int id =
-                        resultSet.getInt(
-                                "id"
-                        );
-
-                String name =
-                        resultSet.getString(
-                                "name"
-                        );
-
-                String email =
-                        resultSet.getString(
-                                "email"
-                        );
-
-                String country =
-                        resultSet.getString(
-                                "country"
-                        );
-
-
                 users.add(
-                        new User(
-                                id,
-                                name,
-                                email,
-                                country
+                        mapUser(
+                                resultSet
                         )
                 );
             }
@@ -315,5 +291,137 @@ public class UserDAO implements IUserDAO {
 
             return statement.executeUpdate() > 0;
         }
+    }
+
+
+    @Override
+    public List<User> searchByCountry(
+            String country
+    ) throws SQLException {
+
+        List<User> users =
+                new ArrayList<>();
+
+
+        try (
+                Connection connection =
+                        getConnection();
+
+                PreparedStatement statement =
+                        connection.prepareStatement(
+                                SEARCH_BY_COUNTRY_SQL
+                        )
+        ) {
+
+            /*
+             * Vi du:
+             *
+             * country = Viet
+             *
+             * SQL nhan:
+             *
+             * %Viet%
+             *
+             * => tim duoc Viet Nam.
+             */
+            statement.setString(
+                    1,
+                    "%"
+                    + country.trim()
+                    + "%"
+            );
+
+
+            try (
+                    ResultSet resultSet =
+                            statement.executeQuery()
+            ) {
+
+                while (resultSet.next()) {
+
+                    users.add(
+                            mapUser(
+                                    resultSet
+                            )
+                    );
+                }
+            }
+        }
+
+
+        return users;
+    }
+
+
+    @Override
+    public List<User> sortByName()
+            throws SQLException {
+
+        List<User> users =
+                new ArrayList<>();
+
+
+        try (
+                Connection connection =
+                        getConnection();
+
+                PreparedStatement statement =
+                        connection.prepareStatement(
+                                SORT_BY_NAME_SQL
+                        );
+
+                ResultSet resultSet =
+                        statement.executeQuery()
+        ) {
+
+            while (resultSet.next()) {
+
+                users.add(
+                        mapUser(
+                                resultSet
+                        )
+                );
+            }
+        }
+
+
+        return users;
+    }
+
+
+    /**
+     * Chuyen mot dong ResultSet thanh User.
+     */
+    private User mapUser(
+            ResultSet resultSet
+    ) throws SQLException {
+
+        int id =
+                resultSet.getInt(
+                        "id"
+                );
+
+        String name =
+                resultSet.getString(
+                        "name"
+                );
+
+        String email =
+                resultSet.getString(
+                        "email"
+                );
+
+        String country =
+                resultSet.getString(
+                        "country"
+                );
+
+
+        return new User(
+                id,
+                name,
+                email,
+                country
+        );
     }
 }

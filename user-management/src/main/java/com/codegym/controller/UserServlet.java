@@ -15,7 +15,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Controller xu ly CRUD cho User.
+ * Controller xu ly CRUD,
+ * tim kiem theo country
+ * va sap xep theo name.
  */
 @WebServlet(
         name = "UserServlet",
@@ -84,6 +86,26 @@ public class UserServlet extends HttpServlet {
                 case "delete":
 
                     showDeleteForm(
+                            request,
+                            response
+                    );
+
+                    break;
+
+
+                case "search":
+
+                    searchByCountry(
+                            request,
+                            response
+                    );
+
+                    break;
+
+
+                case "sort":
+
+                    sortByName(
                             request,
                             response
                     );
@@ -204,6 +226,129 @@ public class UserServlet extends HttpServlet {
                 listUser
         );
 
+
+        request.setAttribute(
+                "pageTitle",
+                "Danh sách tất cả User"
+        );
+
+
+        forwardToList(
+                request,
+                response
+        );
+    }
+
+
+    /**
+     * GET:
+     *
+     * /users?action=search&country=Viet
+     */
+    private void searchByCountry(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) throws SQLException,
+            ServletException,
+            IOException {
+
+        String country =
+                request.getParameter(
+                        "country"
+                );
+
+
+        if (
+                country == null
+                || country.trim().isEmpty()
+        ) {
+
+            listUsers(
+                    request,
+                    response
+            );
+
+            return;
+        }
+
+
+        List<User> listUser =
+                userDAO.searchByCountry(
+                        country
+                );
+
+
+        request.setAttribute(
+                "listUser",
+                listUser
+        );
+
+
+        request.setAttribute(
+                "countryKeyword",
+                country
+        );
+
+
+        request.setAttribute(
+                "pageTitle",
+                "Kết quả tìm kiếm theo country"
+        );
+
+
+        forwardToList(
+                request,
+                response
+        );
+    }
+
+
+    /**
+     * GET:
+     *
+     * /users?action=sort
+     */
+    private void sortByName(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) throws SQLException,
+            ServletException,
+            IOException {
+
+        List<User> listUser =
+                userDAO.sortByName();
+
+
+        request.setAttribute(
+                "listUser",
+                listUser
+        );
+
+
+        request.setAttribute(
+                "sortedByName",
+                true
+        );
+
+
+        request.setAttribute(
+                "pageTitle",
+                "Danh sách sắp xếp theo Name A-Z"
+        );
+
+
+        forwardToList(
+                request,
+                response
+        );
+    }
+
+
+    private void forwardToList(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) throws ServletException,
+            IOException {
 
         RequestDispatcher dispatcher =
                 request.getRequestDispatcher(

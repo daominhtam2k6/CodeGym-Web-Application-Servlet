@@ -1,16 +1,17 @@
 # User Management - JSP Servlet JDBC MySQL
 
-## Mục tiêu
+Ứng dụng CRUD User theo kiến trúc MVC + DAO.
 
-Thực hành CRUD bằng:
+## Công nghệ
 
+- Java 17
+- Maven
 - JSP
-- Servlet
+- Jakarta Servlet 6
+- JSTL 3
 - JDBC
 - MySQL
-- JSTL
-- MVC
-- DAO
+- Tomcat 10.1+
 
 ## Database
 
@@ -22,76 +23,71 @@ Table:
 
 users
 
-Các cột:
+Columns:
 
 - id
 - name
 - email
 - country
 
-File SQL:
-
-database.sql
-
-Chạy bằng MySQL:
-
-mysql -u root -p < database.sql
-
-## Model
-
-User.java
-
-## DAO
-
-IUserDAO.java
-
-UserDAO.java
-
-UserDAO dùng:
-
-- Connection
-- DriverManager
-- PreparedStatement
-- ResultSet
-
-## Controller
-
-UserServlet.java
-
-Mapping:
-
-/users
-
 ## Chức năng
 
-- Danh sách User
+- Hiển thị danh sách User
 - Thêm User
 - Sửa User
 - Xóa User
+- Tìm kiếm theo country
+- Sắp xếp theo name
 
-## MySQL Configuration
+## Search by Country
 
-Mở:
+Ví dụ:
 
-src/main/java/com/codegym/dao/UserDAO.java
+/users?action=search&country=Viet
 
-Kiểm tra:
+DAO sử dụng:
 
-jdbcURL
+WHERE country LIKE ?
 
-jdbcUsername
+PreparedStatement parameter:
 
-jdbcPassword
+%Viet%
 
-Mặc định source đang dùng:
+Vì vậy có thể tìm được:
 
-Database: demo
+Viet Nam
 
-Username: root
+## Sort by Name
 
-Password: password
+URL:
 
-Hãy thay password bằng password MySQL trên máy nếu khác.
+/users?action=sort
+
+SQL:
+
+ORDER BY name ASC
+
+## DAO
+
+IUserDAO có:
+
+insertUser
+
+selectUser
+
+selectAllUsers
+
+deleteUser
+
+updateUser
+
+searchByCountry
+
+sortByName
+
+## URL
+
+http://localhost:8080/user-management/users
 
 ## Build
 
@@ -101,6 +97,16 @@ WAR:
 
 target/user-management.war
 
-## URL
+## MySQL
 
-http://localhost:8080/user-management/users
+Kiểm tra cấu hình trong:
+
+src/main/java/com/codegym/dao/UserDAO.java
+
+Các giá trị cần đúng với máy:
+
+jdbcURL
+
+jdbcUsername
+
+jdbcPassword
